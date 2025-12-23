@@ -19,6 +19,8 @@ const PORT = process.env.PORT;
 //     res.send("Log out route");
 // });
 
+app.use(express.json());    //Parses JSON request bodies ,Converts JSON → JavaScript object ,Attaches it to req.body
+
 app.use("/api/auth",authRoutes);
 
 app.listen(PORT, ()=>{
