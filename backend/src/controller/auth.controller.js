@@ -100,4 +100,50 @@ export function logout(req,res){
     res.clearCookie("jwt");
     res.status(200).json({success:true,message:"Logout Successful"});
 }
+export async function onboard(req,res){
+    try {
+        
+        const userId = req.user._id;
+        const {fullName, bio,nativeLanguage, learningLanguage, location} = req.body;
 
+        // It builds an array of missing field names and filters out the ones that aren’t missing, so you return a clean list of only the fields the user didn’t provide.
+        if (!fullName || !bio || !nativeLanguage || !learningLanguage || !location) {
+            return res.status(400).json({
+                message:"All fields are required",
+                missingFields:[
+                    !fullName && "fullName",
+                    !bio && "bio",
+                    !nativeLanguage && "nativeLanguage",
+                    !learningLanguage && "learningLanguage",
+                    !location && "location"
+                ].filter(Boolean),
+            });
+        }
+
+        const updatedUser = await User.findByIdAndUpdate(userId,{
+            ...req.body,
+            isOnBoarded:true
+        }, {new:true});
+
+        if (!updatedUser) {
+            return res.status(404).json({message:"User not found"});
+        }
+
+        //TODO: update user info in stream
+        try {
+            await upsertStreamUser({
+                id: updatedUser._id.toString(),
+                name: updatedUser.fullName,
+                image: updatedUser.profilePic || ''
+            })
+            console.log(`Stream user updated after onboarding for ${updatedUser.fullName}`)
+        } catch (streamError) {
+            console.log("Error updating stream user during onboarding: ",streamError)
+        }
+
+        res.status(400).json({success:true, user:updatedUser});
+    } catch (error) {
+        console.log("Onboarding error: ",error);
+        res.status(500).json({message:"Internal server error"})
+    }
+}
