@@ -4,6 +4,7 @@ import "dotenv/config";
 // dotenv.config();  //to read  process.env.PORT
 import authRoutes from "./routes/auth.route.js";
 import userRoutes from "./routes/user.route.js";
+import chatRoutes from "./routes/chat.route.js"
 import { connectDB } from "./lib/db.js";
 import cookieParser from "cookie-parser";
 
@@ -17,15 +18,13 @@ const PORT = process.env.PORT;
 // app.get("/api/auth/signin", (req,res)=>{
 //     res.send("Sign In route");
 // });
-// app.get("/api/auth/logout", (req,res)=>{
-//     res.send("Log out route");
-// });
 
 app.use(express.json());    //Parses JSON request bodies ,Converts JSON → JavaScript object ,Attaches it to req.body
 app.use(cookieParser());  //to get access to cookies 
 
 app.use("/api/auth",authRoutes);
 app.use("/api/user",userRoutes);
+app.use("/api/chat",chatRoutes);
 
 app.listen(PORT, ()=>{
     console.log(`Server is running at port ${PORT}`);
