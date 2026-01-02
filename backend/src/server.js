@@ -2,7 +2,8 @@ import express from "express";
 import "dotenv/config";
 // import dotenv from "dotenv";
 // dotenv.config();  //to read  process.env.PORT
-import authRoutes from "./routes/auth.route.js"
+import authRoutes from "./routes/auth.route.js";
+import userRoutes from "./routes/user.route.js";
 import { connectDB } from "./lib/db.js";
 import cookieParser from "cookie-parser";
 
@@ -24,6 +25,7 @@ app.use(express.json());    //Parses JSON request bodies ,Converts JSON → Java
 app.use(cookieParser());  //to get access to cookies 
 
 app.use("/api/auth",authRoutes);
+app.use("/api/user",userRoutes);
 
 app.listen(PORT, ()=>{
     console.log(`Server is running at port ${PORT}`);
