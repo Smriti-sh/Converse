@@ -9,9 +9,28 @@ import SignUpPage from './pages/SignUpPage';
 
 import toast, {Toaster} from 'react-hot-toast';
 
-function App() {
-  return <div className='h-screen' data-theme='forest'>
-    <button onClick={()=>{toast.success("Hello bitches!")}}>Click here</button>
+import { useQuery } from '@tanstack/react-query';
+import axios from 'axios';
+import { useEffect,useState } from 'react';
+import { axiosInstance } from './lib/axios.js';
+
+const App = () => {
+
+  //useQuery send request 3 more times if failed once , so better than useEffect
+    const {data, isLoading, error} = useQuery({
+      queryKey: ["todos"],
+
+      queryFn: async () => {
+        const res = await axiosInstance.get("/auth/me");
+        return res.data;
+      },
+      retry: false, //to stop after 1 try/failure
+    });
+    console.log({data});
+    console.log({isLoading});
+    console.log({error});
+return(
+  <div className='h-screen' data-theme='forest'>
     <Routes>
         <Route path='/' element={<HomePage/>}/>
         <Route path='/call' element={<CallPage/>}/>
@@ -22,7 +41,8 @@ function App() {
     </Routes>
 
     <Toaster/>
-  </div>;
+  </div>
+)
 }
 
 export default App;
