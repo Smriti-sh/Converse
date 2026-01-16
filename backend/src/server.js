@@ -26,6 +26,7 @@ app.use(cors({
 }));
 app.use(express.json());    //Parses JSON request bodies ,Converts JSON → JavaScript object ,Attaches it to req.body
 app.use(cookieParser());  //to get access to cookies 
+app.use(express.urlencoded({ extended: true }));
 
 app.use("/api/auth",authRoutes);
 app.use("/api/user",userRoutes);
